@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-PT" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard TV Cabo</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+:root{--bg:#060b22;--bg-grad-a:rgba(56,189,248,.08);--panel:rgba(16,25,51,.96);--panel-alt:rgba(12,19,39,.98);--panel-soft:#0c132c;--line:#24304f;--text:#f8fafc;--muted:#93a1bd;--accent:#38bdf8;--success:#22c55e;--danger:#ef4444;--warning:#facc15;--header-bg:rgba(18,26,52,.96);--table-head:#11182e;--table-banner:#27324b;--input-bg:#060b22;--input-line:#1c2744;--shadow:0 24px 50px rgba(0,0,0,.35)}
+html[data-theme="light"]{--bg:#eef4ff;--bg-grad-a:rgba(37,99,235,.08);--panel:rgba(255,255,255,.95);--panel-alt:rgba(248,251,255,.98);--panel-soft:#f4f8ff;--line:#d8e3f4;--text:#122033;--muted:#59677a;--accent:#0284c7;--success:#16a34a;--danger:#dc2626;--warning:#ca8a04;--header-bg:rgba(255,255,255,.92);--table-head:#edf4ff;--table-banner:#dce8fb;--input-bg:#fff;--input-line:#c9d7ea;--shadow:0 18px 40px rgba(15,23,42,.08)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%}body{font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;color:var(--text);background:radial-gradient(circle at top center,var(--bg-grad-a),transparent 24%),linear-gradient(180deg,var(--bg) 0%,color-mix(in srgb,var(--bg),#000 10%) 100%)}button,input,select{font:inherit}
+.topbar{background:var(--header-bg);border-bottom:1px solid color-mix(in srgb,var(--line),transparent 15%);padding:22px 40px;display:flex;align-items:center;justify-content:space-between;gap:24px;position:sticky;top:0;z-index:20;backdrop-filter:blur(14px)}
+.brand{display:flex;align-items:center;gap:18px}.brand-icon{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;font-size:28px;background:linear-gradient(135deg,#f8fafc,#cbd5e1);color:#0f172a}.brand h1{margin:0;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-.04em}.eyebrow{margin:0 0 6px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:.72rem;font-weight:800}
+.top-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.theme-toggle{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:12px 16px;cursor:pointer;font-weight:700;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:48px}
+.sync-pill{display:inline-flex;align-items:center;gap:12px;padding:10px 18px;border-radius:999px;color:var(--muted);background:var(--panel);border:1px solid color-mix(in srgb,var(--accent),transparent 30%);touch-action:manipulation}.sync-pill strong{color:var(--text)}.sync-button{border:0;border-radius:999px;padding:14px 22px;font-weight:800;cursor:pointer;color:#06250f;background:linear-gradient(135deg,#7ef29a,#22c55e);touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:48px}
+.layout{max-width:1720px;margin:0 auto;padding:38px 28px 50px;display:grid;grid-template-columns:380px minmax(0,1fr);gap:26px}.panel{background:linear-gradient(180deg,var(--panel),var(--panel-alt));border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow)}
+.sidebar{padding:30px;align-self:start;position:sticky;top:104px;max-height:calc(100vh - 124px);overflow:auto}.filter-block+.filter-block{margin-top:26px}.label{display:block;margin-bottom:12px;font-size:.98rem;color:var(--muted)}.field{display:grid;gap:8px}.field span{color:var(--muted);font-size:.92rem}
+.input{width:100%;background:var(--input-bg);color:var(--text);border:1px solid var(--input-line);border-radius:12px;padding:14px;outline:none}.input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent),transparent 82%)}
+.action-row{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}.tiny-btn{border:0;border-radius:7px;padding:8px 12px;color:color-mix(in srgb,var(--accent),var(--text) 30%);background:color-mix(in srgb,var(--panel),transparent 5%);cursor:pointer;font-weight:700;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:40px}
+.sidebar::-webkit-scrollbar{width:10px}.sidebar::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--accent),transparent 45%);border-radius:999px}.sidebar::-webkit-scrollbar-track{background:transparent}
+.chips{display:flex;flex-wrap:wrap;gap:9px}.chip{border:1px solid color-mix(in srgb,var(--line),transparent 10%);background:color-mix(in srgb,var(--panel),transparent 5%);color:var(--muted);border-radius:999px;padding:10px 14px;cursor:pointer;font-size:.82rem;font-weight:700;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:42px}.chip.active{color:#08111f;background:var(--accent);border-color:var(--accent)}
+.location-select{min-height:118px}.status-grid{display:flex;gap:16px;flex-wrap:wrap}.status-grid label{color:var(--muted);display:inline-flex;align-items:center;gap:8px;cursor:pointer}.status-grid input{accent-color:var(--accent)}
+.selected-box{margin-top:26px;padding:18px;border-radius:18px;background:var(--panel-soft);border:1px solid color-mix(in srgb,var(--line),transparent 10%)}.selected-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}.selected-header h2{margin:0;font-size:1.25rem}
+.status-badge{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:999px;font-size:.8rem;font-weight:800;white-space:nowrap;color:var(--text);background:color-mix(in srgb,var(--line),transparent 10%)}
+.meta-list{display:grid;gap:10px;margin-bottom:16px}.meta-item{display:grid;gap:4px;padding:12px;border-radius:14px;background:color-mix(in srgb,var(--panel),transparent 8%);border:1px solid color-mix(in srgb,var(--line),transparent 10%)}.meta-item span{color:var(--muted);font-size:.8rem}.update-grid{display:grid;gap:12px}.save-btn{border:0;border-radius:14px;padding:14px 16px;color:#fff;cursor:pointer;font-weight:800;background:linear-gradient(135deg,#2563eb,#06b6d4)}.toast{margin-top:14px;min-height:22px;color:var(--muted);font-size:.92rem}
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-bottom:20px}.stats-card{padding:28px 20px;text-align:center}.stats-card p{margin:0;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-size:.88rem}.stats-card strong{display:block;margin-top:20px;font-size:2rem;font-weight:900}.stats-card.total strong{color:var(--accent)}.stats-card.paid strong{color:var(--success)}.stats-card.cut strong{color:var(--danger)}.stats-card.pending strong{color:var(--warning)}
+.charts-grid{display:grid;grid-template-columns:1.45fr 1fr;gap:20px;margin-bottom:20px}.chart-card{padding:22px;min-height:374px}.panel-title{margin:0 0 18px;font-size:1.15rem;font-weight:800}.chart-card canvas{width:100%;height:295px!important}
+.table-card{overflow:hidden}.table-header{background:var(--table-banner);padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid color-mix(in srgb,var(--line),transparent 10%)}.table-header h3{margin:0;font-size:1rem}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:950px}thead tr{background:var(--table-head)}th,td{text-align:left;padding:16px 18px;border-bottom:1px solid color-mix(in srgb,var(--line),transparent 10%)}th{color:color-mix(in srgb,var(--accent),var(--text) 30%);font-size:.85rem;text-transform:uppercase;letter-spacing:.04em}td{color:var(--text)}
+.result-btn{border:1px solid color-mix(in srgb,var(--accent),transparent 50%);background:color-mix(in srgb,var(--panel),transparent 5%);color:color-mix(in srgb,var(--accent),var(--text) 20%);border-radius:10px;padding:10px 12px;cursor:pointer;font-weight:700;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:42px}
+.pill{display:inline-flex;align-items:center;justify-content:center;min-width:92px;padding:7px 12px;border-radius:999px;font-size:.8rem;font-weight:800}.pill.pago{background:rgba(34,197,94,.18);color:#65f0a1}.pill.corte{background:rgba(239,68,68,.18);color:#ff8b8b}.pill.pendente{background:rgba(250,204,21,.18);color:#fde047}.pill.sem-registo{background:rgba(148,163,184,.18);color:#cbd5e1}
+.mobile-cards{display:none;gap:14px;padding:16px}.mobile-card{border:1px solid var(--line);border-radius:20px;padding:16px;background:var(--panel);display:grid;gap:12px}.mobile-card h4{margin:0;font-size:1rem}.mobile-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mobile-meta div{padding:10px;background:color-mix(in srgb,var(--panel-soft),transparent 5%);border:1px solid color-mix(in srgb,var(--line),transparent 10%);border-radius:12px}.muted{color:var(--muted)}
+.login-screen{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:24px;background:linear-gradient(180deg,rgba(6,11,34,.96),rgba(5,9,28,.98))}.login-card{width:min(100%,420px);padding:28px;border-radius:28px;background:linear-gradient(180deg,var(--panel),var(--panel-alt));border:1px solid var(--line);box-shadow:var(--shadow)}.login-card h2{margin:0 0 10px;font-size:2rem}.login-card p{margin:0 0 18px;color:var(--muted)}.login-form{display:grid;gap:12px}.login-error{min-height:22px;color:#ff8b8b;font-size:.92rem}.hidden{display:none!important}
+@media (max-width:1320px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.charts-grid{grid-template-columns:1fr}}
+@media (max-width:1080px){.layout{grid-template-columns:1fr}.sidebar{position:static;max-height:none;overflow:visible}}
+@media (max-width:760px){.topbar{padding:18px 16px;align-items:flex-start;flex-direction:column}.layout{padding:18px 12px 30px}.sidebar,.chart-card,.stats-card{padding:18px}.stats-grid{grid-template-columns:1fr}.table-wrap{display:none}.mobile-cards{display:grid}.brand h1{font-size:1.85rem}.top-actions{width:100%;display:grid;grid-template-columns:1fr;gap:10px}.theme-toggle{width:100%;justify-content:center}.sync-pill{width:100%;display:grid;grid-template-columns:1fr;justify-items:stretch;border-radius:24px}.sync-button{width:100%}}
+  </style>
+</head>
+<body>
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <p class="eyebrow">Acesso protegido</p>
+      <h2>Entrar no dashboard</h2>
+      <p>Digite a senha para abrir e usar o sistema.</p>
+      <form id="loginForm" class="login-form">
+        <input id="passwordInput" class="input" type="password" placeholder="Digite a senha" autocomplete="current-password" required>
+        <button class="save-btn" type="submit">Entrar</button>
+        <div id="loginError" class="login-error"></div>
+      </form>
+    </div>
+  </div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">&#128202;</div>
+      <div>
+        <p class="eyebrow">Google Sheets Dashboard</p>
+        <h1>Dashboard Leads</h1>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Alternar tema">
+        <span class="theme-toggle__text">Modo claro</span>
+      </button>
+      <div class="sync-pill">
+        <button id="refreshBtn" class="sync-button" type="button">Sincronizar Sheets</button>
+        <span id="connectionText">Conectando...</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="panel sidebar">
+      <section class="filter-block">
+        <label class="label" for="searchInput">Pesquisar cliente por nome</label>
+        <input id="searchInput" class="input" type="search" placeholder="Digite nome ou localização">
+      </section>
+
+      <section id="mobileWarning" class="filter-block" style="display:none;">
+        <article class="meta-item">
+          <span>Aviso de acesso</span>
+          <strong>Para sincronizar no celular, abra este dashboard por um link HTTPS publicado no navegador, e não como arquivo local.</strong>
+        </article>
+      </section>
+
+      <section class="filter-block">
+        <label class="label">Meses em foco</label>
+        <div class="action-row">
+          <button id="selectAllMonths" class="tiny-btn" type="button">Todos</button>
+          <button id="clearMonths" class="tiny-btn" type="button">Limpar</button>
+        </div>
+        <div id="monthChips" class="chips"></div>
+      </section>
+
+      <section class="filter-block">
+        <label class="label" for="locationFilter">Filtrar por localização</label>
+        <div class="action-row">
+          <button id="clearLocations" class="tiny-btn" type="button">Limpar localizações</button>
+        </div>
+        <select id="locationFilter" class="input location-select" multiple></select>
+      </section>
+
+      <section class="filter-block">
+        <span class="label">Indicadores por status</span>
+        <div class="status-grid">
+          <label><input type="checkbox" id="statusPago" checked> Pago</label>
+          <label><input type="checkbox" id="statusCorte" checked> Corte</label>
+          <label><input type="checkbox" id="statusPendente" checked> Pendente</label>
+        </div>
+      </section>
+
+      <section class="selected-box">
+        <div class="selected-header">
+          <div>
+            <p class="eyebrow">Cliente selecionado</p>
+            <h2 id="selectedClientName">Nenhum cliente</h2>
+          </div>
+          <span id="selectedClientStatus" class="status-badge">Sem mês</span>
+        </div>
+
+        <div id="selectedMeta" class="meta-list">
+          <article class="meta-item">
+            <span>Informação</span>
+            <strong>Selecione um cliente na lista para editar.</strong>
+          </article>
+        </div>
+
+        <form id="updateForm" class="update-grid">
+          <label class="field">
+            <span>Mês</span>
+            <select id="updateMonth" class="input" required></select>
+          </label>
+
+          <label class="field">
+            <span>Status</span>
+            <select id="updateStatus" class="input" required>
+              <option value="Pago">Pago</option>
+              <option value="Corte">Corte</option>
+              <option value="Pendente">Pendente</option>
+            </select>
+          </label>
+
+          <button class="save-btn" type="submit">Salvar atualização</button>
+        </form>
+
+        <div id="toast" class="toast"></div>
+      </section>
+    </aside>
+
+    <section class="content">
+      <section class="stats-grid">
+        <article class="panel stats-card total">
+          <p>Clientes encontrados</p>
+          <strong id="statTotal">0</strong>
+        </article>
+        <article class="panel stats-card paid">
+          <p>Total pagos</p>
+          <strong id="statPaid">0</strong>
+        </article>
+        <article class="panel stats-card cut">
+          <p>Total corte</p>
+          <strong id="statCut">0</strong>
+        </article>
+        <article class="panel stats-card pending">
+          <p>Pendentes</p>
+          <strong id="statPending">0</strong>
+        </article>
+      </section>
+
+      <section class="charts-grid">
+        <article class="panel chart-card">
+          <h3 class="panel-title">Distribuição por mês</h3>
+          <canvas id="barChart"></canvas>
+        </article>
+        <article class="panel chart-card">
+          <h3 class="panel-title">Resumo de status</h3>
+          <canvas id="pieChart"></canvas>
+        </article>
+      </section>
+
+      <section class="panel table-card">
+        <div class="table-header">
+          <div>
+            <p class="eyebrow">Resultados</p>
+            <h3>Clientes sincronizados</h3>
+          </div>
+          <span id="tableCount" class="muted">0 resultados</span>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Localização</th>
+                <th>Telefone</th>
+                <th>Nº</th>
+                <th>Mês</th>
+                <th>Status</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+
+        <div id="mobileCards" class="mobile-cards"></div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+const CONFIG={webAppUrl:"https://script.google.com/macros/s/AKfycbxZLvnfdDgzmYoBkOyZX6Glrr7YnXCFU7WBqPDXjHKtrZosC-bO75JnPGJIM8ZfGguVIw/exec",dashboardPassword:"Stvs1234",months:[{code:"JAN",label:"Jan"},{code:"FEV",label:"Fev"},{code:"MAR",label:"Mar"},{code:"ABR",label:"Abr"},{code:"MAI",label:"Mai"},{code:"JUN",label:"Jun"},{code:"JUL",label:"Jul"},{code:"AGO",label:"Ago"},{code:"SET",label:"Set"},{code:"OUT",label:"Out"},{code:"NOV",label:"Nov"},{code:"DEZ",label:"Dez"}],statuses:["Pago","Corte","Pendente"],themeStorageKey:"tv_cabo_dashboard_theme"};
+const state={clients:[],visibleClients:[],selectedClientId:null,charts:{bar:null,pie:null}};
+const els={loginScreen:document.getElementById("loginScreen"),loginForm:document.getElementById("loginForm"),passwordInput:document.getElementById("passwordInput"),loginError:document.getElementById("loginError"),refreshBtn:document.getElementById("refreshBtn"),connectionText:document.getElementById("connectionText"),themeToggle:document.getElementById("themeToggle"),themeToggleText:document.querySelector(".theme-toggle__text"),searchInput:document.getElementById("searchInput"),monthChips:document.getElementById("monthChips"),selectAllMonths:document.getElementById("selectAllMonths"),clearMonths:document.getElementById("clearMonths"),clearLocations:document.getElementById("clearLocations"),locationFilter:document.getElementById("locationFilter"),statusPago:document.getElementById("statusPago"),statusCorte:document.getElementById("statusCorte"),statusPendente:document.getElementById("statusPendente"),statTotal:document.getElementById("statTotal"),statPaid:document.getElementById("statPaid"),statCut:document.getElementById("statCut"),statPending:document.getElementById("statPending"),tableBody:document.getElementById("tableBody"),tableCount:document.getElementById("tableCount"),mobileCards:document.getElementById("mobileCards"),selectedClientName:document.getElementById("selectedClientName"),selectedClientStatus:document.getElementById("selectedClientStatus"),selectedMeta:document.getElementById("selectedMeta"),updateForm:document.getElementById("updateForm"),updateMonth:document.getElementById("updateMonth"),updateStatus:document.getElementById("updateStatus"),toast:document.getElementById("toast"),mobileWarning:document.getElementById("mobileWarning")};
+document.addEventListener("DOMContentLoaded",()=>{els.searchInput.placeholder="Digite o nome do cliente";applyStoredTheme();renderMonthChips();renderMonthSelect();bindEvents();handleRuntimeWarnings();});
+function bindEvents(){els.loginForm.addEventListener("submit",handleLogin);bindTap(els.refreshBtn,loadClients);bindTap(els.themeToggle,toggleTheme);els.searchInput.addEventListener("input",applyFilters);els.locationFilter.addEventListener("change",applyFilters);els.statusPago.addEventListener("change",renderIndicatorsOnly);els.statusCorte.addEventListener("change",renderIndicatorsOnly);els.statusPendente.addEventListener("change",renderIndicatorsOnly);bindTap(els.selectAllMonths,()=>toggleAllMonths(true));bindTap(els.clearMonths,()=>toggleAllMonths(false));bindTap(els.clearLocations,clearLocationFilter);els.updateMonth.addEventListener("change",syncSelectedStatusFromMonth);els.updateForm.addEventListener("submit",saveUpdate);els.tableBody.addEventListener("click",handleSelectionClick);els.mobileCards.addEventListener("click",handleSelectionClick);els.tableBody.addEventListener("touchend",handleSelectionClick,{passive:true});els.mobileCards.addEventListener("touchend",handleSelectionClick,{passive:true});}
+function handleLogin(event){event.preventDefault();if(els.passwordInput.value===CONFIG.dashboardPassword){els.loginScreen.classList.add("hidden");els.loginError.textContent="";loadClients();return;}els.loginError.textContent="Senha incorreta. Tente novamente.";els.passwordInput.select();}
+function bindTap(element,handler){element.addEventListener("click",handler);element.addEventListener("touchend",(event)=>{event.preventDefault();handler(event);},{passive:false});}
+function applyStoredTheme(){const stored=localStorage.getItem(CONFIG.themeStorageKey)||"dark";document.documentElement.dataset.theme=stored;els.themeToggleText.textContent=stored==="dark"?"Modo claro":"Modo escuro";}
+function toggleTheme(){const next=document.documentElement.dataset.theme==="dark"?"light":"dark";document.documentElement.dataset.theme=next;localStorage.setItem(CONFIG.themeStorageKey,next);els.themeToggleText.textContent=next==="dark"?"Modo claro":"Modo escuro";renderCharts();}
+function handleRuntimeWarnings(){const isLocalFile=location.protocol==="file:";const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(isLocalFile&&isMobile){els.mobileWarning.style.display="block";showToast("No celular, prefira abrir este dashboard por um link HTTPS publicado.",true);}}
+function renderMonthChips(){els.monthChips.innerHTML=CONFIG.months.map(month=>`<button type="button" class="chip active" data-month="${month.code}">${month.label}</button>`).join("");els.monthChips.querySelectorAll(".chip").forEach(chip=>bindTap(chip,()=>{chip.classList.toggle("active");applyFilters();}));}
+function renderMonthSelect(){els.updateMonth.innerHTML=CONFIG.months.map(month=>`<option value="${month.code}">${month.label}</option>`).join("");els.updateMonth.value=getCurrentMonthCode();}
+function toggleAllMonths(active){els.monthChips.querySelectorAll(".chip").forEach(chip=>chip.classList.toggle("active",active));applyFilters();}
+async function loadClients(){try{els.connectionText.textContent="A sincronizar...";const response=await requestApi("listClients");state.clients=normalizeClients(response.clients||[]);populateLocationFilter();applyFilters();els.connectionText.innerHTML=`<strong>${state.clients.length} clientes</strong> sincronizados`;showToast("Clientes carregados com sucesso.");}catch(error){console.error(error);state.clients=[];state.visibleClients=[];renderIndicatorsOnly();renderTable();renderSelectedClient();els.connectionText.textContent="Erro na sincronização";showToast(error.message||"Falha ao sincronizar com a planilha.",true);}}
+function normalizeClients(clients){return clients.map(client=>({rowNumber:Number(client.rowNumber),name:String(client.name||"").trim(),location:String(client.location||"").trim(),phone:String(client.phone||"").trim(),customerNumber:String(client.customerNumber||"").trim(),latestMonth:String(client.latestMonth||"").trim(),latestStatus:String(client.latestStatus||"").trim(),lastUpdatedAt:String(client.lastUpdatedAt||"").trim(),monthStatus:client.monthStatus||{}})).filter(client=>client.rowNumber&&(client.name||client.location));}
+function populateLocationFilter(){const selected=new Set(Array.from(els.locationFilter.selectedOptions).map(option=>option.value));const locations=[...new Set(state.clients.map(client=>client.location).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt"));els.locationFilter.innerHTML=locations.map(location=>`<option value="${escapeHtml(location)}" ${selected.size===0||selected.has(location)?"selected":""}>${escapeHtml(location)}</option>`).join("");}
+function clearLocationFilter(){Array.from(els.locationFilter.options).forEach(option=>{option.selected=true;});applyFilters();}
+function getActiveMonths(){const active=Array.from(els.monthChips.querySelectorAll(".chip.active")).map(chip=>chip.dataset.month);return active.length?active:[getCurrentMonthCode()];}
+function getSelectedLocations(){const options=Array.from(els.locationFilter.options);const selected=options.filter(option=>option.selected).map(option=>option.value);return selected.length===options.length?[]:selected;}
+function getAllowedStatuses(){const allowed=[];if(els.statusPago.checked)allowed.push("Pago");if(els.statusCorte.checked)allowed.push("Corte");if(els.statusPendente.checked)allowed.push("Pendente");return allowed.length?allowed:[...CONFIG.statuses];}
+function getDisplayMonth(client){const activeMonths=getActiveMonths();return activeMonths.find(month=>client.monthStatus[month])||activeMonths[0]||client.latestMonth||getCurrentMonthCode();}
+function getDisplayStatus(client,month){return client.monthStatus[month]||"Sem registo";}
+function applyFilters(){const query=els.searchInput.value.trim().toLowerCase();const selectedLocations=getSelectedLocations();state.visibleClients=state.clients.filter(client=>{const nameOnly=String(client.name||"").toLowerCase();return(!query||nameOnly.includes(query))&&(!selectedLocations.length||selectedLocations.includes(client.location));});if(state.selectedClientId&&!state.visibleClients.some(client=>client.rowNumber===state.selectedClientId))state.selectedClientId=null;renderIndicatorsOnly();renderTable();renderSelectedClient();}
+function renderIndicatorsOnly(){const allowedStatuses=getAllowedStatuses();const summary={Pago:0,Corte:0,Pendente:0};state.visibleClients.forEach(client=>{const status=getDisplayStatus(client,getDisplayMonth(client));if(allowedStatuses.includes(status))summary[status]+=1;});els.statTotal.textContent=state.visibleClients.length;els.statPaid.textContent=summary.Pago;els.statCut.textContent=summary.Corte;els.statPending.textContent=summary.Pendente;els.tableCount.textContent=`${state.visibleClients.length} resultados`;renderCharts();}
+function renderTable(){if(!state.visibleClients.length){els.tableBody.innerHTML=`<tr><td colspan="7">Nenhum cliente encontrado.</td></tr>`;els.mobileCards.innerHTML="";return;}els.tableBody.innerHTML=state.visibleClients.map(client=>{const month=getDisplayMonth(client);const status=getDisplayStatus(client,month);return`<tr><td><strong>${escapeHtml(client.name||"-")}</strong></td><td>${escapeHtml(client.location||"-")}</td><td>${escapeHtml(client.phone||"-")}</td><td>${escapeHtml(client.customerNumber||"-")}</td><td>${escapeHtml(month)}</td><td>${renderStatusPill(status)}</td><td><button class="result-btn" type="button" data-select-row="${client.rowNumber}">Selecionar</button></td></tr>`;}).join("");els.mobileCards.innerHTML=state.visibleClients.map(client=>{const month=getDisplayMonth(client);const status=getDisplayStatus(client,month);return`<article class="mobile-card"><div><h4>${escapeHtml(client.name||"-")}</h4><div class="muted">${escapeHtml(client.location||"-")}</div></div><div>${renderStatusPill(status)}</div><div class="mobile-meta"><div><strong>Telefone</strong><br>${escapeHtml(client.phone||"-")}</div><div><strong>Nº</strong><br>${escapeHtml(client.customerNumber||"-")}</div><div><strong>Mês</strong><br>${escapeHtml(month)}</div><div><strong>Atualizado</strong><br>${escapeHtml(client.lastUpdatedAt||"-")}</div></div><button class="result-btn" type="button" data-select-row="${client.rowNumber}">Selecionar</button></article>`;}).join("");}
+function handleSelectionClick(event){const button=event.target.closest("[data-select-row]");if(!button)return;selectClient(Number(button.dataset.selectRow));}
+function selectClient(rowNumber){const client=state.clients.find(item=>item.rowNumber===rowNumber);if(!client)return;state.selectedClientId=rowNumber;const month=getDisplayMonth(client);els.updateMonth.value=month;els.updateStatus.value=client.monthStatus[month]||"Pendente";renderSelectedClient();}
+function getSelectedClient(){return state.clients.find(client=>client.rowNumber===state.selectedClientId)||null;}
+function syncSelectedStatusFromMonth(){const client=getSelectedClient();if(!client)return;els.updateStatus.value=client.monthStatus[els.updateMonth.value]||"Pendente";renderSelectedClient();}
+function renderSelectedClient(){const client=getSelectedClient();if(!client){els.selectedClientName.textContent="Nenhum cliente";els.selectedClientStatus.textContent="Sem mês";els.selectedClientStatus.className="status-badge";els.selectedMeta.innerHTML=`<article class="meta-item"><span>Informação</span><strong>Selecione um cliente na lista para editar.</strong></article>`;return;}const month=els.updateMonth.value||getCurrentMonthCode();const status=client.monthStatus[month]||"Sem registo";els.selectedClientName.textContent=client.name||"-";els.selectedClientStatus.textContent=`${month} · ${status}`;els.selectedClientStatus.className=`status-badge ${statusClass(status)}`;els.selectedMeta.innerHTML=`<article class="meta-item"><span>Localização</span><strong>${escapeHtml(client.location||"-")}</strong></article><article class="meta-item"><span>Telefone</span><strong>${escapeHtml(client.phone||"-")}</strong></article><article class="meta-item"><span>Nº</span><strong>${escapeHtml(client.customerNumber||"-")}</strong></article><article class="meta-item"><span>Histórico mensal</span><strong>${escapeHtml(renderMonthHistory(client.monthStatus||{}))}</strong></article>`;}
+async function saveUpdate(event){event.preventDefault();const client=getSelectedClient();if(!client){showToast("Selecione um cliente antes de salvar.",true);return;}const payload={rowNumber:client.rowNumber,month:els.updateMonth.value,status:els.updateStatus.value};try{showToast("Salvando atualização...");await requestApi("updateStatus",payload);await loadClients();state.selectedClientId=payload.rowNumber;selectClient(payload.rowNumber);showToast("Atualização salva com sucesso.");}catch(error){console.error(error);showToast(error.message||"Não foi possível salvar a atualização.",true);}}
+function renderCharts(){const months=getActiveMonths();const allowedStatuses=getAllowedStatuses();const barData={labels:months,datasets:[{label:"Pago",data:months.map(month=>countByMonth(month,"Pago",allowedStatuses)),backgroundColor:"#22c55e",borderRadius:10},{label:"Corte",data:months.map(month=>countByMonth(month,"Corte",allowedStatuses)),backgroundColor:"#ef4444",borderRadius:10},{label:"Pendente",data:months.map(month=>countByMonth(month,"Pendente",allowedStatuses)),backgroundColor:"#facc15",borderRadius:10}]};const pieData={labels:["Pago","Corte","Pendente"],datasets:[{data:[totalByStatus("Pago",months,allowedStatuses),totalByStatus("Corte",months,allowedStatuses),totalByStatus("Pendente",months,allowedStatuses)],backgroundColor:["#22c55e","#ef4444","#facc15"],borderWidth:0}]};if(state.charts.bar)state.charts.bar.destroy();if(state.charts.pie)state.charts.pie.destroy();state.charts.bar=new Chart(document.getElementById("barChart"),{type:"bar",data:barData,options:chartOptions(false)});state.charts.pie=new Chart(document.getElementById("pieChart"),{type:"doughnut",data:pieData,options:chartOptions(true)});}
+function countByMonth(month,status,allowedStatuses){if(!allowedStatuses.includes(status))return 0;return state.visibleClients.filter(client=>client.monthStatus[month]===status).length;}
+function totalByStatus(status,months,allowedStatuses){return months.reduce((sum,month)=>sum+countByMonth(month,status,allowedStatuses),0);}
+function chartOptions(isPie){const root=getComputedStyle(document.documentElement);return{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:isPie?"bottom":"top",labels:{color:root.getPropertyValue("--text").trim()}}},scales:isPie?{}:{x:{ticks:{color:root.getPropertyValue("--muted").trim()},grid:{color:"rgba(127,127,127,0.15)"}},y:{beginAtZero:true,ticks:{color:root.getPropertyValue("--muted").trim(),precision:0},grid:{color:"rgba(127,127,127,0.15)"}}}};}
+async function requestApi(action,payload={}){try{return await requestViaJsonp(action,payload,{timeout:25000});}catch(firstError){try{return await requestViaJsonp(action,payload,{cacheBust:true,timeout:40000});}catch(secondError){throw new Error(buildMobileFriendlyError(firstError,secondError));}}}
+function requestViaJsonp(action,payload={},options={}){return new Promise((resolve,reject)=>{const callbackName=`jsonpCallback_${Date.now()}_${Math.floor(Math.random()*1e4)}`;const url=new URL(CONFIG.webAppUrl);url.searchParams.set("action",action);url.searchParams.set("callback",callbackName);if(options.cacheBust)url.searchParams.set("_ts",Date.now().toString());Object.entries(payload).forEach(([key,value])=>{if(value!==undefined&&value!==null)url.searchParams.set(key,value);});const script=document.createElement("script");script.async=true;script.referrerPolicy="no-referrer";const cleanup=()=>{delete window[callbackName];if(script.parentNode)script.parentNode.removeChild(script);};const timeoutId=setTimeout(()=>{cleanup();reject(new Error("Tempo de sincronização esgotado."));},options.timeout||25000);window[callbackName]=(data)=>{clearTimeout(timeoutId);cleanup();if(!data||!data.success){reject(new Error((data&&data.message)||"Erro na resposta do Apps Script."));return;}resolve(data);};script.onerror=()=>{clearTimeout(timeoutId);cleanup();reject(new Error("Falha ao carregar o script remoto do Apps Script."));};script.src=url.toString();document.body.appendChild(script);});}
+function buildMobileFriendlyError(firstError,secondError){const isLocalFile=location.protocol==="file:";const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(isLocalFile&&isMobile){return"Falha ao comunicar com o Apps Script no navegador do celular. Abra este dashboard por um link HTTPS publicado, não como arquivo local.";}return(secondError&&secondError.message)||(firstError&&firstError.message)||"Falha ao comunicar com o Apps Script. Verifique a publicação do Web App.";}
+function renderMonthHistory(monthStatus){return CONFIG.months.map(month=>`${month.code}: ${monthStatus[month.code]||"-"}`).join(" | ");}
+function renderStatusPill(status){return`<span class="pill ${statusClass(status)}">${escapeHtml(status)}</span>`;}
+function statusClass(status){const normalized=String(status||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g,"-");return normalized||"sem-registo";}
+function getCurrentMonthCode(){return CONFIG.months[new Date().getMonth()].code;}
+function showToast(message,isError=false){els.toast.textContent=message;els.toast.style.color=isError?"#ff8b8b":"#7ef29a";}
+function escapeHtml(value){return String(value??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");}
+  </script>
+</body>
+</html>
