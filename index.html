@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard TV Cabo</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ffffff'/%3E%3Crect x='76' y='38' width='11' height='36' rx='5.5' fill='%231d4ed8'/%3E%3Cline x1='50' y1='34' x2='31' y2='10' stroke='%230a0a0a' stroke-width='7' stroke-linecap='round'/%3E%3Cline x1='50' y1='34' x2='69' y2='10' stroke='%230a0a0a' stroke-width='7' stroke-linecap='round'/%3E%3Ccircle cx='31' cy='10' r='5' fill='%230a0a0a'/%3E%3Ccircle cx='69' cy='10' r='5' fill='%230a0a0a'/%3E%3Crect x='16' y='30' width='64' height='48' rx='11' fill='%23ffffff' stroke='%230a0a0a' stroke-width='7'/%3E%3Ctext x='27' y='63' font-family='Arial,Helvetica,sans-serif' font-size='24' font-weight='900' fill='%230a0a0a'%3EST%3C/text%3E%3Ctext x='51' y='63' font-family='Arial,Helvetica,sans-serif' font-size='24' font-weight='900' fill='%231d4ed8'%3EVC%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -46,8 +47,8 @@ button,input,select{font:inherit}
 
 .topbar{background:var(--header-bg);border-bottom:1px solid var(--border);padding:18px 40px;display:flex;align-items:center;justify-content:space-between;gap:24px;position:sticky;top:0;z-index:20;backdrop-filter:blur(14px)}
 .brand{display:flex;align-items:center;gap:16px}
-.brand-icon{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent),black 22%));color:#fff;box-shadow:0 6px 16px color-mix(in srgb,var(--accent),transparent 65%)}
-.brand-icon svg{width:22px;height:22px}
+.brand-icon{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:#ffffff;border:1px solid var(--line);box-shadow:0 6px 16px rgba(0,0,0,.12);overflow:hidden}
+.brand-icon svg{width:100%;height:100%}
 .brand h1{margin:0;font-size:clamp(1.35rem,2vw,1.7rem);font-weight:800;letter-spacing:-.02em}
 .eyebrow{margin:0 0 5px;color:var(--faint);text-transform:uppercase;letter-spacing:.09em;font-size:.7rem;font-weight:700}
 
@@ -156,10 +157,10 @@ tbody tr:hover{background:var(--panel-soft)}
   </div>
   <header class="topbar">
     <div class="brand">
-      <div class="brand-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="10" width="4" height="11" rx="1" fill="currentColor"/><rect x="10" y="5" width="4" height="16" rx="1" fill="currentColor"/><rect x="17" y="13" width="4" height="8" rx="1" fill="currentColor"/></svg></div>
+      <div class="brand-icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="20" fill="#ffffff"/><rect x="76" y="38" width="11" height="36" rx="5.5" fill="#1d4ed8"/><line x1="50" y1="34" x2="31" y2="10" stroke="#0a0a0a" stroke-width="7" stroke-linecap="round"/><line x1="50" y1="34" x2="69" y2="10" stroke="#0a0a0a" stroke-width="7" stroke-linecap="round"/><circle cx="31" cy="10" r="5" fill="#0a0a0a"/><circle cx="69" cy="10" r="5" fill="#0a0a0a"/><rect x="16" y="30" width="64" height="48" rx="11" fill="#ffffff" stroke="#0a0a0a" stroke-width="7"/><text x="27" y="63" font-family="Arial,Helvetica,sans-serif" font-size="24" font-weight="900" fill="#0a0a0a">ST</text><text x="51" y="63" font-family="Arial,Helvetica,sans-serif" font-size="24" font-weight="900" fill="#1d4ed8">VC</text></svg></div>
       <div>
-        <p class="eyebrow">Google Sheets Dashboard</p>
-        <h1>Dashboard Leads</h1>
+        <p class="eyebrow">STVC</p>
+        <h1>Painel de Clientes</h1>
       </div>
     </div>
 
