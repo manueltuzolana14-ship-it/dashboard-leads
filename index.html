@@ -131,7 +131,14 @@ tbody tr:hover{background:var(--panel-soft)}
 .login-screen{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:24px;background:color-mix(in srgb,var(--bg),black 8%)}
 .login-card{position:relative;width:min(100%,420px);padding:30px 28px;border-radius:18px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden}
 .login-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent),black 25%))}
+.login-intro{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.li-icon{width:72px;height:72px;border-radius:18px;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.18)}
+.li-icon svg{width:100%;height:100%}
+.li-tagline{margin:0;text-align:center;font-weight:800;font-size:clamp(.72rem,3.4vw,.92rem);letter-spacing:.02em;color:var(--text);min-height:1.2em}
+.li-tagline .li-space{display:inline-block;width:.4em}
+.li-tagline .li-hl{color:var(--accent)}
 .login-card h2{margin:0 0 8px;font-size:1.6rem;font-weight:800;letter-spacing:-.02em}
+.login-title{color:#e11d2e}
 .login-card p{margin:0 0 20px;color:var(--muted);font-size:.92rem}
 .login-form{display:grid;gap:12px}
 .login-error{min-height:20px;color:var(--pill-crit-text);font-size:.85rem;font-weight:600}
@@ -145,8 +152,12 @@ tbody tr:hover{background:var(--panel-soft)}
 <body>
   <div id="loginScreen" class="login-screen">
     <div class="login-card">
+      <div class="login-intro" aria-hidden="true">
+        <div class="li-icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="20" fill="#ffffff"/><rect x="76" y="38" width="11" height="36" rx="5.5" fill="#1d4ed8"/><line x1="50" y1="34" x2="31" y2="10" stroke="#0a0a0a" stroke-width="7" stroke-linecap="round"/><line x1="50" y1="34" x2="69" y2="10" stroke="#0a0a0a" stroke-width="7" stroke-linecap="round"/><circle cx="31" cy="10" r="5" fill="#0a0a0a"/><circle cx="69" cy="10" r="5" fill="#0a0a0a"/><rect x="16" y="30" width="64" height="48" rx="11" fill="#ffffff" stroke="#0a0a0a" stroke-width="7"/><text x="48" y="60" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="18" font-weight="900" letter-spacing="-0.5"><tspan fill="#0a0a0a">ST</tspan><tspan fill="#1d4ed8">VC</tspan></text></svg></div>
+        <p class="li-tagline" id="liTagline"></p>
+      </div>
       <p class="eyebrow">Acesso protegido</p>
-      <h2>Entrar no dashboard</h2>
+      <h2 class="login-title">Entrada do Painel de Clientes</h2>
       <p>Digite a senha para abrir e usar o sistema.</p>
       <form id="loginForm" class="login-form">
         <input id="passwordInput" class="input" type="password" placeholder="Digite a senha" autocomplete="current-password" required>
@@ -326,7 +337,61 @@ const CONFIG={webAppUrl:"https://script.google.com/macros/s/AKfycbxZLvnfdDgzmYoB
 const state={clients:[],visibleClients:[],selectedClientId:null,charts:{bar:null,pie:null}};
 const els={loginScreen:document.getElementById("loginScreen"),loginForm:document.getElementById("loginForm"),passwordInput:document.getElementById("passwordInput"),loginError:document.getElementById("loginError"),refreshBtn:document.getElementById("refreshBtn"),connectionText:document.getElementById("connectionText"),themeToggle:document.getElementById("themeToggle"),themeToggleText:document.querySelector(".theme-toggle__text"),searchInput:document.getElementById("searchInput"),monthChips:document.getElementById("monthChips"),selectAllMonths:document.getElementById("selectAllMonths"),clearMonths:document.getElementById("clearMonths"),clearLocations:document.getElementById("clearLocations"),clearStatusFilters:document.getElementById("clearStatusFilters"),locationFilter:document.getElementById("locationFilter"),statusPago:document.getElementById("statusPago"),statusCorte:document.getElementById("statusCorte"),statusPendente:document.getElementById("statusPendente"),statTotal:document.getElementById("statTotal"),statPaid:document.getElementById("statPaid"),statCut:document.getElementById("statCut"),statPending:document.getElementById("statPending"),tableBody:document.getElementById("tableBody"),tableCount:document.getElementById("tableCount"),exportExcelBtn:document.getElementById("exportExcelBtn"),mobileCards:document.getElementById("mobileCards"),selectedPanel:document.getElementById("selectedPanel"),selectedClientName:document.getElementById("selectedClientName"),selectedClientStatus:document.getElementById("selectedClientStatus"),selectedMeta:document.getElementById("selectedMeta"),updateForm:document.getElementById("updateForm"),updateMonth:document.getElementById("updateMonth"),updateStatus:document.getElementById("updateStatus"),toast:document.getElementById("toast"),mobileWarning:document.getElementById("mobileWarning")};
 if(window.Chart&&Chart.defaults&&Chart.defaults.font){Chart.defaults.font.family="'Inter',system-ui,-apple-system,sans-serif";}
-document.addEventListener("DOMContentLoaded",()=>{els.searchInput.placeholder="Digite o nome do cliente";applyStoredTheme();renderMonthChips();renderMonthSelect();bindEvents();handleRuntimeWarnings();});
+function buildLoginIntro(){
+  const el=document.getElementById("liTagline");
+  if(!el)return;
+  const TEXT="SERVIÇO DE TV À CABO";
+  const HL_START=TEXT.indexOf("TV À");
+  const HL_END=HL_START+"TV À".length;
+  const TOTAL=4000,ICON_DUR=950,TAG_START=1400,STAGGER=55,LETTER_DUR=400,HL_START_MS=3200,FADE_START=3700;
+  const easeOutCubic="cubic-bezier(0.215,0.61,0.355,1)";
+  const easeOutBack="cubic-bezier(0.34,1.56,0.64,1)";
+  const icon=document.querySelector(".li-icon");
+  if(icon&&icon.animate){
+    icon.animate([
+      {opacity:0,transform:"translateY(26px) scale(.9)",offset:0,easing:easeOutCubic},
+      {opacity:1,transform:"translateY(0) scale(1)",offset:ICON_DUR/TOTAL},
+      {opacity:1,transform:"translateY(0) scale(1)",offset:FADE_START/TOTAL},
+      {opacity:0,transform:"translateY(0) scale(1)",offset:1}
+    ],{duration:TOTAL,iterations:Infinity});
+  }
+  el.innerHTML="";
+  const spans=[];
+  for(let i=0;i<TEXT.length;i++){
+    const ch=TEXT[i];
+    if(ch===" "){const sp=document.createElement("span");sp.className="li-space";el.appendChild(sp);continue;}
+    const span=document.createElement("span");
+    span.textContent=ch;
+    const isHL=i>=HL_START&&i<HL_END;
+    if(isHL)span.className="li-hl";
+    el.appendChild(span);
+    spans.push({span,i,isHL});
+  }
+  if(!el.animate&&spans.length){return;}
+  spans.forEach(({span,i,isHL})=>{
+    const start=(TAG_START+i*STAGGER)/TOTAL;
+    const enterEnd=(TAG_START+i*STAGGER+LETTER_DUR)/TOTAL;
+    const fadeStart=FADE_START/TOTAL;
+    const keyframes=[
+      {opacity:0,transform:"translateY(18px)",offset:0},
+      {opacity:0,transform:"translateY(18px)",offset:Math.min(start,1),easing:easeOutCubic},
+      {opacity:1,transform:"translateY(0)",offset:Math.min(enterEnd,1)},
+      {opacity:1,transform:"translateY(0)",offset:Math.max(fadeStart,Math.min(enterEnd,1))},
+      {opacity:0,transform:"translateY(0)",offset:1}
+    ];
+    if(span.animate)span.animate(keyframes,{duration:TOTAL,iterations:Infinity});
+    if(isHL&&span.animate){
+      const hs=HL_START_MS/TOTAL;
+      span.animate([
+        {transform:"scale(1)",textShadow:"0 0 0 rgba(56,120,229,0)",offset:hs,easing:easeOutBack},
+        {transform:"scale(1.18)",textShadow:"0 0 14px rgba(56,120,229,.85)",offset:hs+0.09},
+        {transform:"scale(1)",textShadow:"0 0 0 rgba(56,120,229,0)",offset:Math.min(hs+0.2,1)},
+        {transform:"scale(1)",textShadow:"0 0 0 rgba(56,120,229,0)",offset:1}
+      ],{duration:TOTAL,iterations:Infinity});
+    }
+  });
+}
+document.addEventListener("DOMContentLoaded",()=>{els.searchInput.placeholder="Digite o nome do cliente";applyStoredTheme();renderMonthChips();renderMonthSelect();bindEvents();handleRuntimeWarnings();buildLoginIntro();});
 function bindEvents(){els.loginForm.addEventListener("submit",handleLogin);bindTap(els.refreshBtn,loadClients);bindTap(els.themeToggle,toggleTheme);els.searchInput.addEventListener("input",applyFilters);els.locationFilter.addEventListener("change",applyFilters);els.statusPago.addEventListener("change",applyFilters);els.statusCorte.addEventListener("change",applyFilters);els.statusPendente.addEventListener("change",applyFilters);bindTap(els.selectAllMonths,()=>setFocusedMonth(getCurrentMonthCode()));bindTap(els.clearMonths,selectNextMonth);bindTap(els.clearLocations,clearLocationFilter);bindTap(els.clearStatusFilters,clearStatusFilterSelection);bindTap(els.exportExcelBtn,exportVisibleClientsToExcel);els.updateMonth.addEventListener("change",handleUpdateMonthChange);els.updateForm.addEventListener("submit",saveUpdate);els.tableBody.addEventListener("click",handleSelectionClick);els.mobileCards.addEventListener("click",handleSelectionClick);els.tableBody.addEventListener("touchend",handleSelectionClick,{passive:true});els.mobileCards.addEventListener("touchend",handleSelectionClick,{passive:true});}
 function handleLogin(event){event.preventDefault();if(els.passwordInput.value===CONFIG.dashboardPassword){els.loginScreen.classList.add("hidden");els.loginError.textContent="";loadClients();return;}els.loginError.textContent="Senha incorreta. Tente novamente.";els.passwordInput.select();}
 function bindTap(element,handler){element.addEventListener("click",handler);element.addEventListener("touchend",(event)=>{event.preventDefault();handler(event);},{passive:false});}
